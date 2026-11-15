@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RABLOX - Professional Gaming Platform</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #0b0e14;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* ORQA FONDA O'YINLAR RASMI VA QORAYTIRISH */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(rgba(10, 14, 23, 0.8), rgba(10, 14, 23, 0.9)), 
+                        url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+        }
+        .form-box {
+            background: rgba(20, 26, 40, 0.88);
+            backdrop-filter: blur(14px);
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .form-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff2a5f;
+            font-size: 24px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+        input[type="text"], input[type="date"], input[type="email"] {
+            width: 100%;
+            padding: 11px 14px;
+            margin-top: 6px;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            background-color: #0f1522;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+        input:focus {
+            border-color: #ff2a5f;
+            box-shadow: 0 0 8px rgba(255, 42, 95, 0.3);
+        }
+
+        /* QORA RANGLI SILUET JINS TANLASH (ENG PASTDA) */
+        .gender-grid {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+        .gender-option {
+            flex: 1;
+            cursor: pointer;
+        }
+        .gender-option input[type="radio"] {
+            display: none;
+        }
+        .gender-card {
+            background-color: #0f1522;
+            border: 2px solid #2d3748;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+        /* Qora siluet ikonka uchun SVG chizma */
+        .gender-card svg {
+            width: 45px;
+            height: 45px;
+            fill: #ffffff; /* Siluet oq/qora kontrast uchun */
+            margin-bottom: 6px;
+            transition: 0.2s;
+        }
+        .gender-card span {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        .gender-option input[type="radio"]:checked + .gender-card {
+            border-color: #ff2a5f;
+            background-color: rgba(255, 42, 95, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 42, 95, 0.3);
+        }
+        .gender-option input[type="radio"]:checked + .gender-card svg {
+            fill: #ff2a5f;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(90deg, #ff2a5f, #ff5e3a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 22px;
+            cursor: pointer;
+            transition: 0.25s;
+            letter-spacing: 0.5px;
+        }
+        .btn-main:hover {
+            opacity: 0.92;
+            transform: scale(1.01);
+        }
+        .switch-text {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+        .switch-text:hover {
+            color: #ff2a5f;
+            text-decoration: underline;
+        }
+
+        /* RABLOX O'YINLAR PLATFORMASI */
+        #rablox-screen {
+            display: none;
+            background: radial-gradient(circle at top right, #1a233a, #0b0e14);
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: rgba(15, 21, 34, 0.95);
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff2a5f;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #ff2a5f;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #1e293b;
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .container {
+            max-width: 1120px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .container h2 {
+            margin-bottom: 22px;
+            border-left: 4px solid #ff2a5f;
+            padding-left: 12px;
+            font-size: 22px;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .game-card {
+            background-color: #161d2f;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+            transition: transform 0.25s, box-shadow 0.25s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .game-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(255, 42, 95, 0.25);
+        }
+        .game-banner {
+            height: 115px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+        }
+        .game-details {
+            padding: 14px;
+        }
+        .game-details h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .game-details p {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+        .play-btn {
+            width: 100%;
+            padding: 9px;
+            background-color: #ff2a5f;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .play-btn:hover {
+            background-color: #e01e4f;
+        }
+
+        /* O'YIN MAYDONI */
+        #game-arena {
+            display: none;
+            background-color: #161d2f;
+            padding: 30px;
+            border-radius: 14px;
+            text-align: center;
+            min-height: 400px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .back-btn {
+            background-color: #263147;
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            float: left;
+            font-weight: bold;
+        }
+        .back-btn:hover {
+            background-color: #ff2a5f;
+        }
+        .game-inner-box {
+            clear: both;
+            padding-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- KIRISH VA RO'YXATDAN O'TISH -->
+    <div class="auth-container" id="auth-screen">
+        
+        <!-- RO'YXATDAN O'TISH -->
+        <div class="form-box" id="reg-box">
+            <h2>RABLOX</h2>
+            <form onsubmit="royxatdanOtish(event)">
+                <label>Ism:</label>
+                <input type="text" id="reg-ism" placeholder="Ismingizni kiriting" required>
+
+                <label>Familiya:</label>
+                <input type="text" id="reg-familiya" placeholder="Familiyangizni kiriting" required>
+
+                <label>Tug'ilgan yil:</label>
+                <input type="date" id="reg-yil" required>
+
+                <label>Email:</label>
+                <input type="email" id="reg-email" placeholder="example@gmail.com" required>
+
+                <!-- JINS TANLASH (ENG OXIRIDA, SILUET IKONKALAR BILAN) -->
+                <label style="margin-top: 16px;">Jinsingizni tanlang:</label>
+                <div class="gender-grid">
+                    <label class="gender-option">
+                        <input type="radio" name="jins" value="Erkak" required>
+                        <div class="gender-card">
+                            <!-- Erkak silueti -->
+                            <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm0 6a2 2 0 1 1 2-2 2 2 0 0 1-2 2zm6 3h-2.07a7.032 7.032 0 0 0-9.86 0H4a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v4a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-3h2v3a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-4h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2z"/></svg>
+                            <span>Erkak</span>
+                        </div>
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="jins" value="Ayol" required>
+                        <div class="gender-card">
+                            <!-- Ayol silueti -->
+                            <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm0 6a2 2 0 1 1 2-2 2 2 0 0 1-2 2zm5 3h-1.07a7.032 7.032 0 0 0-7.86 0H7a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1.05l1.45 4.36A2 2 0 0 0 11.4 22h1.2a2 2 0 0 0 1.9-1.34L15.95 15H17a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2z"/></svg>
+                            <span>Ayol</span>
+                        </div>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-main">Ro'yxatdan o'tish</button>
+            </form>
+            <div class="switch-text" onclick="oyinniAlmashtir('login')">Akkauntingiz bormi? Email bilan kirish</div>
+        </div>
+
+        <!-- KIRISH (FAQAT EMAIL BILAN) -->
+        <div class="form-box" id="login-box" style="display: none;">
+            <h2>RABLOX - Kirish</h2>
+            <form onsubmit="tizimgaKirish(event)">
+                <label>Email manzilingiz:</label>
+                <input type="email" id="log-email" placeholder="Ro'yxatdan o'tgan emailingiz" required>
+
+                <button type="submit" class="btn-main">Saytga kirish</button>
+            </form>
+            <div class="switch-text" onclick="oyinniAlmashtir('reg')">Yangi akkaunt ochish (Ro'yxatdan o'tish)</div>
+        </div>
+
+    </div>
+
+    <!-- RABLOX O'YINLAR PLATFORMASI -->
+    <div id="rablox-screen">
+        <div class="navbar">
+            <div class="logo">RABLOX</div>
+            <div class="user-info" id="user-display">
+                <span id="nav-name">O'yinchi</span>
+            </div>
+        </div>
+
+        <div class="container">
+            <div id="main-lobby">
+                <h2>Top 10 ta O'yinlar</h2>
+                <div class="games-grid">
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #ff416c, #ff4b2b);">🎯</div>
+                        <div class="game-details">
+                            <h3>Tezkorish</h3>
+                            <p>👍 96% | 👤 2.4K</p>
+                            <button class="play-btn" onclick="oyinOchish(1)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #1e90ff, #00bfff);">🔢</div>
+                        <div class="game-details">
+                            <h3>Sonni Top</h3>
+                            <p>👍 91% | 👤 1.1K</p>
+                            <button class="play-btn" onclick="oyinOchish(2)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #f7b733, #fc4a1a);">➕</div>
+                        <div class="game-details">
+                            <h3>Matematika</h3>
+                            <p>👍 89% | 👤 950</p>
+                            <button class="play-btn" onclick="oyinOchish(3)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #11998e, #38ef7d);">🪨</div>
+                        <div class="game-details">
+                            <h3>Qaychi-Tosh</h3>
+                            <p>👍 94% | 👤 3.8K</p>
+                            <button class="play-btn" onclick="oyinOchish(4)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #833ab4, #fd1d1d);">💡</div>
+                        <div class="game-details">
+                            <h3>Xotira Sinovi</h3>
+                            <p>👍 93% | 👤 1.7K</p>
+                            <button class="play-btn" onclick="oyinOchish(5)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #4facfe, #00f2fe);">🎲</div>
+                        <div class="game-details">
+                            <h3>Zar Tashlash</h3>
+                            <p>👍 88% | 👤 720</p>
+                            <button class="play-btn" onclick="oyinOchish(6)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #b224ef, #7579ff);">⏱️</div>
+                        <div class="game-details">
+                            <h3>1 Soniya</h3>
+                            <p>👍 97% | 👤 4.1K</p>
+                            <button class="play-btn" onclick="oyinOchish(7)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #eb3349, #f45c43);">🎨</div>
+                        <div class="game-details">
+                            <h3>Rangni Top</h3>
+                            <p>👍 90% | 👤 890</p>
+                            <button class="play-btn" onclick="oyinOchish(8)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #56ab2f, #a8e063);">🪙</div>
+                        <div class="game-details">
+                            <h3>Tanga Yig'ish</h3>
+                            <p>👍 95% | 👤 2.9K</p>
+                            <button class="play-btn" onclick="oyinOchish(9)">O'ynash</button>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-banner" style="background: linear-gradient(45deg, #373b44, #4286f4);">⚡</div>
+                        <div class="game-details">
+                            <h3>Kliker Master</h3>
+                            <p>👍 99% | 👤 6.5K</p>
+                            <button class="play-btn" onclick="oyinOchish(10)">O'ynash</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- O'yin maydoni -->
+            <div id="game-arena">
+                <button class="back-btn" onclick="orqagaQaytish()">⬅ Menyuga qaytish</button>
+                <div class="game-inner-box" id="game-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let saqlanganUser = { email: "", jins: "", ism: "", familiya: "" };
+
+        function oyinniAlmashtir(turlar) {
+            if (turlar === 'login') {
+                document.getElementById('reg-box').style.display = 'none';
+                document.getElementById('login-box').style.display = 'block';
+            } else {
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('reg-box').style.display = 'block';
+            }
+        }
+
+        function royxatdanOtish(event) {
+            event.preventDefault();
+            saqlanganUser.ism = document.getElementById('reg-ism').value;
+            saqlanganUser.familiya = document.getElementById('reg-familiya').value;
+            saqlanganUser.email = document.getElementById('reg-email').value.trim();
+            
+            let tanlanganJins = document.querySelector('input[name="jins"]:checked');
+            saqlanganUser.jins = tanlanganJins ? tanlanganJins.value : "Erkak";
+
+            alert("Muvaffaqiyatli ro'yxatdan o'tdingiz! Endi faqat emailingizni yozib kiring.");
+            oyinniAlmashtir('login');
+        }
+
+        function tizimgaKirish(event) {
+            event.preventDefault();
+            let kiritilganEmail = document.getElementById('log-email').value.trim();
+
+            if (saqlanganUser.email === "" || kiritilganEmail === saqlanganUser.email) {
+                let ism = saqlanganUser.ism ? saqlanganUser.ism : "O'yinchi";
+                let familiya = saqlanganUser.familiya ? saqlanganUser.familiya : "";
+                let belgi = saqlanganUser.jins === "Ayol" ? "👧" : "👦";
+
+                document.getElementById('nav-name').innerText = `${belgi} ${ism} ${familiya}`;
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('rablox-screen').style.display = 'block';
+            } else {
+                alert("❌ Xato! Bunday email ro'yxatdan o'tmagan.");
+            }
+        }
+
+        function orqagaQaytish() {
+            document.getElementById('game-arena').style.display = 'none';
+            document.getElementById('main-lobby').style.display = 'block';
+        }
+
+        function oyinOchish(id) {
+            document.getElementById('main-lobby').style.display = 'none';
+            document.getElementById('game-arena').style.display = 'block';
+            let box = document.getElementById('game-content');
+
+            if (id === 1) {
+                box.innerHTML = `<h2>🎯 Tezkorish (Target Click)</h2><p>Qizil doirani imkon qadar tez bosing!</p><h3 style="margin:15px;">Ball: <span id="s1">0</span></h3><div onclick="b1()" style="width:70px;height:70px;background:#ff4b2b;border-radius:50%;margin:20px auto;cursor:pointer;" id="target1"></div>`;
+            } else if (id === 2) {
+                box.innerHTML = `<h2>🔢 1 dan 20 gacha Sonni Top</h2><p>Men 1-20 orasida son o'yladim.</p><input type="number" id="t2" style="width:200px;margin-top:15px;" placeholder="Son kiriting"><br><button class="btn-main" style="width:200px;" onclick="b2()">Tekshirish</button><h3 id="r2" style="margin-top:15px;color:#00ff88;"></h3>`;
+                window.secret2 = Math.floor(Math.random() * 20) + 1;
+            } else if (id === 3) {
+                let n1 = Math.floor(Math.random() * 50) + 10;
+                let n2 = Math.floor(Math.random() * 50) + 10;
+                window.ans3 = n1 + n2;
+                box.innerHTML = `<h2>➕ Matematik Test</h2><p>${n1} + ${n2} nechiga teng?</p><input type="number" id="t3" style="width:200px;margin-top:15px;" placeholder="Javob"><br><button class="btn-main" style="width:200px;" onclick="b3()">Javob berish</button><h3 id="r3" style="margin-top:15px;color:#00ff88;"></h3>`;
+            } else if (id === 4) {
+                box.innerHTML = `<h2>🪨 Qaychi - Tosh - Qog'oz</h2><p>Tanlang:</p><button class="btn-main" style="width:100px;display:inline-block;margin:5px;" onclick="b4('Tosh')">Tosh</button><button class="btn-main" style="width:100px;display:inline-block;margin:5px;" onclick="b4('Qaychi')">Qaychi</button><button class="btn-main" style="width:100px;display:inline-block;margin:5px;" onclick="b4('Qogoz')">Qog'oz</button><h3 id="r4" style="margin-top:20px;color:#00ff88;"></h3>`;
+            } else if (id === 5) {
+                box.innerHTML = `<h2>💡 Tezkor Sonlar Xotirasi</h2><p>Raqamni eslab qoling: <b style="color:#00ff88;font-size:22px;">7492</b></p><input type="number" id="t5" style="width:200px;margin-top:15px;" placeholder="Ko'rgan raqamni yozing"><br><button class="btn-main" style="width:200px;" onclick="b5()">Tekshirish</button><h3 id="r5" style="margin-top:15px;"></h3>`;
+            } else if (id === 6) {
+                box.innerHTML = `<h2>🎲 Zar Tashlash O'yini</h2><p>Zarni tashlang va 6 chiqishini kuting!</p><button class="btn-main" style="width:200px;margin-top:15px;" onclick="b6()">Zarni tashlash</button><h1 id="r6" style="margin-top:20px;font-size:40px;color:#00ff88;">🎲</h1>`;
+            } else if (id === 7) {
+                box.innerHTML = `<h2>⏱️ Aniq 1 Soniya</h2><p>Boshlashni bosing, 1 soniyadan keyin to'xtatishga harakat qiling!</p><button class="btn-main" style="width:200px;margin-top:15px;" onclick="b7()">Start / Stop</button><h3 id="r7" style="margin-top:20px;"></h3>`;
+                window.tStart = 0;
+            } else if (id === 8) {
+                box.innerHTML = `<h2>🎨 Rangni Moslashtirish</h2><p>Qaysi biri <b style="color:red">QIZIL</b> rang?</p><button onclick="b8(false)" style="padding:15px 30px;background:blue;border:none;border-radius:6px;color:white;cursor:pointer;margin:10px;">Ko'k</button><button onclick="b8(true)" style="padding:15px 30px;background:red;border:none;border-radius:6px;color:white;cursor:pointer;margin:10px;">Qizil</button><h3 id="r8" style="margin-top:15px;"></h3>`;
+            } else if (id === 9) {
+                window.c9 = 0;
+                box.innerHTML = `<h2>🪙 Tanga Yig'ish</h2><p>Tangani bosing va ko'proq yig'ing!</p><h3 style="margin:10px;">Tangalar: <span id="s9">0</span></h3><button class="btn-main" style="width:150px;font-size:24px;" onclick="b9()">🪙 Oling</button>`;
+            } else if (id === 10) {
+                window.c10 = 0;
+                box.innerHTML = `<h2>⚡ Tezlik Klikeri (5 soniya)</h2><p>5 soniya ichida imkon qadar ko'p bosing!</p><h3 style="margin:10px;">Bosishlar: <span id="s10">0</span></h3><button class="btn-main" id="btn10" style="width:200px;padding:20px;font-size:20px;" onclick="b10()">TEZKOR BOS!</button><h3 id="r10" style="margin-top:10px;"></h3>`;
+            }
+        }
+
+        let score1 = 0;
+        function b1() {
+            score1++;
+            document.getElementById('s1').innerText = score1;
+            let t = document.getElementById('target1');
+            t.style.marginTop = Math.floor(Math.random() * 100) + 'px';
+            t.style.marginLeft = (Math.random() * 200 - 100) + 'px';
+        }
+        function b2() {
+            let v = Number(document.getElementById('t2').value);
+            let res = document.getElementById('r2');
+            if (v === window.secret2) res.innerText = "🎉 Topdingiz!";
+            else if (v < window.secret2) res.innerText = "⬆️ Kattaroq son!";
+            else res.innerText = "⬇️ Kichikroq son!";
+        }
+        function b3() {
+            let v = Number(document.getElementById('t3').value);
+            let res = document.getElementById('r3');
+            if (v === window.ans3) res.innerText = "✅ To'g'ri!";
+            else res.innerText = "❌ Xato, qaytadan urinib ko'ring.";
+        }
+        function b4(user) {
+            let arr = ['Tosh', 'Qaychi', 'Qogoz'];
+            let comp = arr[Math.floor(Math.random() * 3)];
+            let res = document.getElementById('r4');
+            if (user === comp) res.innerText = `🤝 Durang! Kompyuter ham ${comp} tanlagandi.`;
+            else if ((user==='Tosh'&&comp==='Qaychi') || (user==='Qaychi'&&comp==='Qogoz') || (user==='Qogoz'&&comp==='Tosh')) 
+                res.innerText = `🏆 Yutdingiz! Kompyuter: ${comp}`;
+            else res.innerText = `😢 Yutqazdingiz. Kompyuter: ${comp}`;
+        }
+        function b5() {
+            let v = document.getElementById('t5').value;
+            let res = document.getElementById('r5');
+            if (v === "7492") { res.innerText = "🎉 Barakalla, xotirangiz a'lo!"; res.style.color = "#00ff88"; }
+            else { res.innerText = "❌ Xato! Raqam 7492 edi."; res.style.color = "#ff4b2b"; }
+        }
+        function b6() {
+            let z = Math.floor(Math.random() * 6) + 1;
+            document.getElementById('r6').innerText = `🎲 ${z}`;
+        }
+        function b7() {
+            let now = new Date().getTime();
+            let res = document.getElementById('r7');
+            if (!window.tSt) {
+                window.tSt = now;
+                res.innerText = "🕒 Vaqt ketdi... Endi yana bir marta bosing!";
+            } else {
+                let diff = (now - window.tSt) / 1000;
+                window.tSt = 0;
+                res.innerText = `Sizning vaqt: ${diff} soniya.`;
+            }
+        }
+        function b8(isRed) {
+            let res = document.getElementById('r8');
+            if (isRed) { res.innerText = "🎉 To'g'ri topdingiz!"; res.style.color = "#00ff88"; }
+            else { res.innerText = "❌ Bu qizil emas!"; res.style.color = "#ff4b2b"; }
+        }
+        function b9() {
+            window.c9++;
+            document.getElementById('s9').innerText = window.c9;
+        }
+        function b10() {
+            if(!window.started10) {
+                window.started10 = true;
+                setTimeout(() => {
+                    document.getElementById('btn10').disabled = true;
+                    document.getElementById('r10').innerText = `Vaqt tugadi! Jami natija: ${window.c10} ta bosish.`;
+                }, 5000);
+            }
+            window.c10++;
+            document.getElementById('s10').innerText = window.c10;
+        }
+    </script>
+</body>
+</html>
